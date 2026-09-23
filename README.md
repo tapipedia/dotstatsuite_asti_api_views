@@ -74,7 +74,7 @@ sequenceDiagram
     CRON->>IMP: import()
 
     Note over IMP,API: 1. Fetch observations (SDMX-JSON)
-    IMP->>API: GET /design/rest/data/ASTI,DF_ASTI_FAO_INDICATORS,1.0/all<br/>Accept: sdmx.data+json;version=2.0.0 (timeout 30s)
+    IMP->>API: GET /design/rest/data/ASTI,DF_ASTI_FAO_INDICATORS,1.0/all<br/>Accept: sdmx.data+json v2.0.0 (timeout 30s)
 
     alt HTTP failure / Cloudflare challenge
         API-->>IMP: error response
