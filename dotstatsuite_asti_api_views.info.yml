@@ -1,0 +1,7 @@
+name: 'dotStat Suite ASTI/FAOSTAT Agricultural R&D Indicators (Views)'
+description: 'Demo /dotstatsuite_asti_api_views Views page, backed by a local table synced from the live dotstatsuite SDMX API (ASTI:DF_ASTI_FAO_INDICATORS - agricultural R&D expenditure and researchers, 134 countries). Independent of tapipedia_dotstatsuite_asti_kenya and tapipedia_dotstatsuite_asti_kenya_api_views - own sync, own table, own lifecycle.'
+type: module
+core_version_requirement: ^11
+package: Tapipedia
+dependencies:
+  - drupal:views

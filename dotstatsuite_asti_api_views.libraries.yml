@@ -1,0 +1,11 @@
+chartjs:
+  version: 1.x
+  css:
+    theme:
+      css/views-chartjs.css: {}
+  js:
+    lib/chartjs/chart.umd.min.js: {}
+    js/views-chartjs.js: {}
+  dependencies:
+    - core/drupalSettings
+    - core/once

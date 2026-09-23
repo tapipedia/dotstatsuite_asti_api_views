@@ -1,0 +1,73 @@
+<?php
+
+/**
+ * @file
+ * Install/schema hooks for dotstatsuite_asti_api_views.
+ *
+ * Flat sync of the observations in the dotstatsuite ASTI:DF_ASTI_FAO_INDICATORS
+ * dataflow (one row per country/indicator/year, 134 countries), refreshed by
+ * SdmxIndicatorImporter via hook_cron() and the
+ * dotstatsuite-asti-api-views:import Drush command. Core
+ * drops this table automatically on module uninstall (see hook_schema()).
+ *
+ * This module keeps its own independent copy of the sync table rather than
+ * reusing tapipedia_dotstatsuite_asti_kenya's or
+ * tapipedia_dotstatsuite_asti_kenya_api_views's - so any of these modules
+ * can be enabled, disabled, or uninstalled without affecting the others.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function dotstatsuite_asti_api_views_schema(): array {
+  $schema['dotstatsuite_asti_api_views_indicator'] = [
+    'description' => 'One row per (country, indicator, year) observation, synced from the live dotstatsuite SDMX API.',
+    'fields' => [
+      'id' => [
+        'type' => 'serial',
+        'not null' => TRUE,
+      ],
+      'ref_area' => [
+        'type' => 'varchar',
+        'length' => 3,
+        'not null' => TRUE,
+        'description' => 'ISO3 country/reference-area code (SDMX REF_AREA) - one of 134 countries in this dataflow.',
+      ],
+      'indicator' => [
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE,
+        'description' => 'Indicator code (SDMX INDICATOR).',
+      ],
+      'indicator_label' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+        'description' => 'Human-readable indicator name, synced from the CL_ASTI_FAO_INDICATOR codelist. NULL if the codelist fetch failed on the last import.',
+      ],
+      'time_period' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'description' => 'Observation year (SDMX TIME_PERIOD).',
+      ],
+      'obs_value' => [
+        'type' => 'float',
+        'not null' => FALSE,
+        'description' => 'Observation value (SDMX OBS_VALUE).',
+      ],
+      'unit_measure' => [
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => FALSE,
+        'description' => 'Unit of measure (SDMX UNIT_MEASURE attribute), e.g. "million USD". Free text, not codelist-backed - the source data has some data-quality noise here (see SdmxIndicatorImporter).',
+      ],
+    ],
+    'primary key' => ['id'],
+    'indexes' => [
+      'ref_area' => ['ref_area'],
+      'indicator' => ['indicator'],
+      'time_period' => ['time_period'],
+    ],
+  ];
+  return $schema;
+}

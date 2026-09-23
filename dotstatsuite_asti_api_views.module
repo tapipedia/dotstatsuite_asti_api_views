@@ -1,0 +1,101 @@
+<?php
+
+/**
+ * @file
+ * Hooks for dotstatsuite_asti_api_views.
+ */
+
+/**
+ * Implements hook_cron().
+ *
+ * Re-syncs dotstatsuite_asti_api_views_indicator from the
+ * live dotstatsuite API at most once an hour, so
+ * /dotstatsuite_asti_api_views never makes a remote HTTP call in the
+ * page-request path.
+ */
+function dotstatsuite_asti_api_views_cron(): void {
+  $state = \Drupal::state();
+  $last_run = (int) $state->get('dotstatsuite_asti_api_views.last_import', 0);
+  $now = \Drupal::time()->getRequestTime();
+  if ($now - $last_run < 3600) {
+    return;
+  }
+  \Drupal::service('dotstatsuite_asti_api_views.importer')->import();
+  $state->set('dotstatsuite_asti_api_views.last_import', $now);
+}
+
+/**
+ * Implements hook_views_data().
+ *
+ * Exposes dotstatsuite_asti_api_views_indicator as a plain
+ * SQL Views base table using only core's standard field/filter/sort
+ * handlers - no custom Views plugins - so every option (fields shown,
+ * exposed filters, sort, pager) is freely reconfigurable by the webmaster
+ * through Structure > Views.
+ */
+function dotstatsuite_asti_api_views_views_data(): array {
+  $data['dotstatsuite_asti_api_views_indicator']['table']['group'] = t('dotStat Suite ASTI/FAOSTAT indicators');
+  $data['dotstatsuite_asti_api_views_indicator']['table']['base'] = [
+    'field' => 'id',
+    'title' => t('dotStat Suite ASTI/FAOSTAT indicators'),
+    'help' => t('Agricultural R&D expenditure and researchers observations for 134 countries, synced from the dotstatsuite SDMX API.'),
+  ];
+
+  $data['dotstatsuite_asti_api_views_indicator']['id'] = [
+    'title' => t('Id'),
+    'help' => t('Primary key.'),
+    'field' => ['id' => 'numeric'],
+    'sort' => ['id' => 'standard'],
+    'filter' => ['id' => 'numeric'],
+  ];
+
+  $data['dotstatsuite_asti_api_views_indicator']['ref_area'] = [
+    'title' => t('Country'),
+    'help' => t('ISO3 country/reference-area code (REF_AREA) - one of 134 countries in this dataflow.'),
+    'field' => ['id' => 'standard'],
+    'sort' => ['id' => 'standard'],
+    'filter' => ['id' => 'string'],
+  ];
+
+  $data['dotstatsuite_asti_api_views_indicator']['indicator_label'] = [
+    'title' => t('Indicator name'),
+    'help' => t('Human-readable indicator name, synced from the CL_ASTI_FAO_INDICATOR codelist.'),
+    'field' => ['id' => 'standard'],
+    'sort' => ['id' => 'standard'],
+    'filter' => ['id' => 'string'],
+  ];
+
+  $data['dotstatsuite_asti_api_views_indicator']['indicator'] = [
+    'title' => t('Indicator'),
+    'help' => t('Indicator code (INDICATOR).'),
+    'field' => ['id' => 'standard'],
+    'sort' => ['id' => 'standard'],
+    'filter' => ['id' => 'string'],
+  ];
+
+  $data['dotstatsuite_asti_api_views_indicator']['time_period'] = [
+    'title' => t('Year'),
+    'help' => t('Observation year (TIME_PERIOD).'),
+    'field' => ['id' => 'numeric'],
+    'sort' => ['id' => 'standard'],
+    'filter' => ['id' => 'numeric'],
+  ];
+
+  $data['dotstatsuite_asti_api_views_indicator']['obs_value'] = [
+    'title' => t('Value'),
+    'help' => t('Observation value (OBS_VALUE).'),
+    'field' => ['id' => 'numeric'],
+    'sort' => ['id' => 'standard'],
+    'filter' => ['id' => 'numeric'],
+  ];
+
+  $data['dotstatsuite_asti_api_views_indicator']['unit_measure'] = [
+    'title' => t('Unit'),
+    'help' => t('Unit of measure (UNIT_MEASURE).'),
+    'field' => ['id' => 'standard'],
+    'sort' => ['id' => 'standard'],
+    'filter' => ['id' => 'string'],
+  ];
+
+  return $data;
+}

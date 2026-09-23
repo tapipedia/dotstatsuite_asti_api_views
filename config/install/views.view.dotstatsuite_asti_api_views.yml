@@ -1,0 +1,840 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - dotstatsuite_asti_api_views
+    - user
+id: dotstatsuite_asti_api_views
+label: 'dotStat Suite ASTI/FAOSTAT Agricultural R&D Indicators'
+module: views
+description: 'Agricultural R&D expenditure and researchers indicators for 134 countries, synced live from the dotstatsuite SDMX API (ASTI:DF_ASTI_FAO_INDICATORS).'
+tag: ''
+base_table: dotstatsuite_asti_api_views_indicator
+base_field: id
+display:
+  default:
+    id: default
+    display_title: Default
+    display_plugin: default
+    position: 0
+    display_options:
+      title: 'dotStat Suite ASTI/FAOSTAT Agricultural R&D Indicators'
+      fields:
+        ref_area:
+          id: ref_area
+          table: dotstatsuite_asti_api_views_indicator
+          field: ref_area
+          relationship: none
+          group_type: group
+          plugin_id: standard
+          label: Country
+        indicator_label:
+          id: indicator_label
+          table: dotstatsuite_asti_api_views_indicator
+          field: indicator_label
+          relationship: none
+          group_type: group
+          plugin_id: standard
+          label: 'Indicator name'
+          exclude: true
+        indicator:
+          id: indicator
+          table: dotstatsuite_asti_api_views_indicator
+          field: indicator
+          relationship: none
+          group_type: group
+          plugin_id: standard
+          label: Indicator
+          alter:
+            alter_text: true
+            text: '{{ indicator_label }} ({{ indicator }})'
+        time_period:
+          id: time_period
+          table: dotstatsuite_asti_api_views_indicator
+          field: time_period
+          relationship: none
+          group_type: group
+          plugin_id: numeric
+          label: Year
+          separator: ''
+        obs_value:
+          id: obs_value
+          table: dotstatsuite_asti_api_views_indicator
+          field: obs_value
+          relationship: none
+          group_type: group
+          plugin_id: numeric
+          label: Value
+          separator: ''
+        unit_measure:
+          id: unit_measure
+          table: dotstatsuite_asti_api_views_indicator
+          field: unit_measure
+          relationship: none
+          group_type: group
+          plugin_id: standard
+          label: Unit
+      pager:
+        type: full
+        options:
+          offset: 0
+          items_per_page: 50
+      access:
+        type: perm
+        options:
+          perm: 'access content'
+      cache:
+        type: tag
+        options: {  }
+      empty:
+        area:
+          id: area
+          table: views
+          field: area
+          relationship: none
+          group_type: group
+          plugin_id: text
+          empty: true
+          content:
+            value: '<p>No indicator data has synced from dotstatsuite yet. Run <code>drush dotstatsuite-asti-api-views:import</code> or wait for the next cron run.</p>'
+            format: basic_html
+      sorts:
+        ref_area:
+          id: ref_area
+          table: dotstatsuite_asti_api_views_indicator
+          field: ref_area
+          relationship: none
+          group_type: group
+          plugin_id: standard
+          order: ASC
+        time_period:
+          id: time_period
+          table: dotstatsuite_asti_api_views_indicator
+          field: time_period
+          relationship: none
+          group_type: group
+          plugin_id: standard
+          order: ASC
+        indicator:
+          id: indicator
+          table: dotstatsuite_asti_api_views_indicator
+          field: indicator
+          relationship: none
+          group_type: group
+          plugin_id: standard
+          order: ASC
+      arguments: {  }
+      filters:
+        ref_area:
+          id: ref_area
+          table: dotstatsuite_asti_api_views_indicator
+          field: ref_area
+          relationship: none
+          group_type: group
+          plugin_id: string
+          operator: '='
+          value: ''
+          group: 1
+          exposed: true
+          expose:
+            operator_id: ''
+            label: Country
+            identifier: ref_area
+            required: false
+            remember: false
+            multiple: false
+          is_grouped: false
+        indicator:
+          id: indicator
+          table: dotstatsuite_asti_api_views_indicator
+          field: indicator
+          relationship: none
+          group_type: group
+          plugin_id: string
+          operator: contains
+          value: ''
+          group: 1
+          exposed: true
+          expose:
+            operator_id: ''
+            label: Indicator
+            identifier: indicator
+            required: false
+            remember: false
+            multiple: false
+          is_grouped: false
+        time_period:
+          id: time_period
+          table: dotstatsuite_asti_api_views_indicator
+          field: time_period
+          relationship: none
+          group_type: group
+          plugin_id: numeric
+          operator: '='
+          value:
+            min: ''
+            max: ''
+            value: ''
+          group: 1
+          exposed: true
+          expose:
+            operator_id: ''
+            label: Year
+            identifier: time_period
+            required: false
+            remember: false
+            multiple: false
+          is_grouped: false
+      style:
+        type: table
+        options:
+          columns:
+            ref_area: ref_area
+            indicator: indicator
+            time_period: time_period
+            obs_value: obs_value
+            unit_measure: unit_measure
+          default: ''
+          info:
+            ref_area: { sortable: true, default_sort_order: asc, align: '', separator: '' }
+            indicator: { sortable: true, default_sort_order: asc, align: '', separator: '' }
+            time_period: { sortable: true, default_sort_order: asc, align: '', separator: '' }
+            obs_value: { sortable: true, default_sort_order: asc, align: '', separator: '' }
+            unit_measure: { sortable: false, align: '', separator: '' }
+          override: true
+          sticky: true
+          empty_table: true
+      row:
+        type: fields
+      relationships: {  }
+      header: {  }
+      footer: {  }
+      display_extenders: {  }
+    cache_metadata:
+      max-age: -1
+      contexts:
+        - 'languages:language_interface'
+        - url
+        - url.query_args
+        - user.permissions
+      tags: {  }
+  page_1:
+    id: page_1
+    display_title: Page
+    display_plugin: page
+    position: 1
+    display_options:
+      defaults:
+        header: false
+      display_description: '/dotstatsuite_asti_api_views indicators table (all 134 countries, filterable)'
+      display_extenders: {  }
+      path: dotstatsuite_asti_api_views
+      header:
+        trend:
+          id: trend
+          table: views
+          field: view
+          relationship: none
+          group_type: group
+          plugin_id: view
+          empty: true
+          view_to_insert: 'dotstatsuite_asti_api_views:block_trend'
+          inherit_arguments: false
+        comparison:
+          id: comparison
+          table: views
+          field: view
+          relationship: none
+          group_type: group
+          plugin_id: view
+          empty: true
+          view_to_insert: 'dotstatsuite_asti_api_views:block_comparison'
+          inherit_arguments: false
+        growth:
+          id: growth
+          table: views
+          field: view
+          relationship: none
+          group_type: group
+          plugin_id: view
+          empty: true
+          view_to_insert: 'dotstatsuite_asti_api_views:block_growth'
+          inherit_arguments: false
+        expenditure:
+          id: expenditure
+          table: views
+          field: view
+          relationship: none
+          group_type: group
+          plugin_id: view
+          empty: true
+          view_to_insert: 'dotstatsuite_asti_api_views:block_expenditure'
+          inherit_arguments: false
+    cache_metadata:
+      max-age: -1
+      contexts:
+        - 'languages:language_interface'
+        - url
+        - url.query_args
+        - user.permissions
+      tags: {  }
+  block_1:
+    id: block_1
+    display_title: Block
+    display_plugin: block
+    position: 1
+    display_options:
+      defaults:
+        pager: false
+      pager:
+        type: full
+        options:
+          offset: 0
+          items_per_page: 20
+      display_description: 'ASTI/FAOSTAT indicators paged table (block)'
+      display_extenders: {  }
+      block_description: 'dotStat Suite ASTI/FAOSTAT Indicators (table)'
+      block_category: Tapipedia
+      allow:
+        items_per_page: false
+    cache_metadata:
+      max-age: -1
+      contexts:
+        - 'languages:language_content'
+        - 'languages:language_interface'
+        - url.query_args
+        - user.permissions
+      tags: {  }
+  block_trend:
+    id: block_trend
+    display_title: 'Chart: Researchers Trend'
+    display_plugin: block
+    position: 2
+    display_options:
+      defaults:
+        fields: false
+        sorts: false
+        filters: false
+        filter_groups: false
+        pager: false
+        style: false
+        row: false
+      display_description: 'ASTI/FAOSTAT - Agricultural Researchers Trend chart (Kenya, full range)'
+      display_extenders: {  }
+      block_description: 'dotStat Suite ASTI/FAOSTAT - Researchers Trend chart'
+      block_category: Tapipedia
+      fields:
+        time_period:
+          id: time_period
+          table: dotstatsuite_asti_api_views_indicator
+          field: time_period
+          relationship: none
+          group_type: group
+          plugin_id: numeric
+          label: Year
+        indicator_label:
+          id: indicator_label
+          table: dotstatsuite_asti_api_views_indicator
+          field: indicator_label
+          relationship: none
+          group_type: group
+          plugin_id: standard
+          label: 'Indicator name'
+        obs_value:
+          id: obs_value
+          table: dotstatsuite_asti_api_views_indicator
+          field: obs_value
+          relationship: none
+          group_type: group
+          plugin_id: numeric
+          label: Value
+      sorts:
+        time_period:
+          id: time_period
+          table: dotstatsuite_asti_api_views_indicator
+          field: time_period
+          relationship: none
+          group_type: group
+          plugin_id: standard
+          order: ASC
+      filters:
+        ref_area:
+          id: ref_area
+          table: dotstatsuite_asti_api_views_indicator
+          field: ref_area
+          relationship: none
+          group_type: group
+          plugin_id: string
+          operator: '='
+          value: KEN
+          group: 1
+          exposed: false
+          expose: { operator_id: '', label: '', identifier: '', required: false, remember: false, multiple: false }
+          is_grouped: false
+        indicator_1:
+          id: indicator_1
+          table: dotstatsuite_asti_api_views_indicator
+          field: indicator
+          relationship: none
+          group_type: group
+          plugin_id: string
+          operator: '='
+          value: RESEARCHERS_FTE
+          group: 2
+          exposed: false
+          expose: { operator_id: '', label: '', identifier: '', required: false, remember: false, multiple: false }
+          is_grouped: false
+        indicator_2:
+          id: indicator_2
+          table: dotstatsuite_asti_api_views_indicator
+          field: indicator
+          relationship: none
+          group_type: group
+          plugin_id: string
+          operator: '='
+          value: RESEARCHERS_FTE_PER_100K_AGW
+          group: 2
+          exposed: false
+          expose: { operator_id: '', label: '', identifier: '', required: false, remember: false, multiple: false }
+          is_grouped: false
+      filter_groups:
+        operator: AND
+        groups:
+          1: AND
+          2: OR
+      pager:
+        type: none
+        options:
+          offset: 0
+          items_per_page: 0
+      style:
+        type: dotstatsuite_chartjs
+        options:
+          chart_type: line
+          label_field: time_period
+          series_field: indicator_label
+          value_field: obs_value
+          secondary_axis_series: 'Agricultural Researchers (FTE) per 100 000 Agricultural Workers'
+          chart_title: 'Researchers Trend (Kenya)'
+      row:
+        type: fields
+      access:
+        type: perm
+        options:
+          perm: 'access content'
+      cache:
+        type: tag
+        options: {  }
+      relationships: {  }
+      arguments: {  }
+      header: {  }
+      footer: {  }
+      empty: {  }
+    cache_metadata:
+      max-age: -1
+      contexts:
+        - 'languages:language_interface'
+        - url
+        - url.query_args
+        - user.permissions
+      tags: {  }
+  block_comparison:
+    id: block_comparison
+    display_title: 'Chart: Year Comparison'
+    display_plugin: block
+    position: 3
+    display_options:
+      defaults:
+        fields: false
+        sorts: false
+        filters: false
+        filter_groups: false
+        pager: false
+        style: false
+        row: false
+      display_description: 'ASTI/FAOSTAT - Year Comparison chart (Kenya, 2015-2023)'
+      display_extenders: {  }
+      block_description: 'dotStat Suite ASTI/FAOSTAT - Year Comparison chart'
+      block_category: Tapipedia
+      fields:
+        time_period:
+          id: time_period
+          table: dotstatsuite_asti_api_views_indicator
+          field: time_period
+          relationship: none
+          group_type: group
+          plugin_id: numeric
+          label: Year
+        indicator_label:
+          id: indicator_label
+          table: dotstatsuite_asti_api_views_indicator
+          field: indicator_label
+          relationship: none
+          group_type: group
+          plugin_id: standard
+          label: 'Indicator name'
+        obs_value:
+          id: obs_value
+          table: dotstatsuite_asti_api_views_indicator
+          field: obs_value
+          relationship: none
+          group_type: group
+          plugin_id: numeric
+          label: Value
+      sorts:
+        time_period:
+          id: time_period
+          table: dotstatsuite_asti_api_views_indicator
+          field: time_period
+          relationship: none
+          group_type: group
+          plugin_id: standard
+          order: ASC
+      filters:
+        ref_area:
+          id: ref_area
+          table: dotstatsuite_asti_api_views_indicator
+          field: ref_area
+          relationship: none
+          group_type: group
+          plugin_id: string
+          operator: '='
+          value: KEN
+          group: 1
+          exposed: false
+          expose: { operator_id: '', label: '', identifier: '', required: false, remember: false, multiple: false }
+          is_grouped: false
+        indicator_1:
+          id: indicator_1
+          table: dotstatsuite_asti_api_views_indicator
+          field: indicator
+          relationship: none
+          group_type: group
+          plugin_id: string
+          operator: '='
+          value: RESEARCHERS_FTE
+          group: 2
+          exposed: false
+          expose: { operator_id: '', label: '', identifier: '', required: false, remember: false, multiple: false }
+          is_grouped: false
+        indicator_2:
+          id: indicator_2
+          table: dotstatsuite_asti_api_views_indicator
+          field: indicator
+          relationship: none
+          group_type: group
+          plugin_id: string
+          operator: '='
+          value: RESEARCHERS_FTE_PER_100K_AGW
+          group: 2
+          exposed: false
+          expose: { operator_id: '', label: '', identifier: '', required: false, remember: false, multiple: false }
+          is_grouped: false
+        time_period:
+          id: time_period
+          table: dotstatsuite_asti_api_views_indicator
+          field: time_period
+          relationship: none
+          group_type: group
+          plugin_id: numeric
+          operator: '>='
+          value: { min: '', max: '', value: '2015' }
+          group: 1
+          exposed: false
+          expose: { operator_id: '', label: '', identifier: '', required: false, remember: false, multiple: false }
+          is_grouped: false
+      filter_groups:
+        operator: AND
+        groups:
+          1: AND
+          2: OR
+      pager:
+        type: none
+        options:
+          offset: 0
+          items_per_page: 0
+      style:
+        type: dotstatsuite_chartjs
+        options:
+          chart_type: bar
+          label_field: time_period
+          series_field: indicator_label
+          value_field: obs_value
+          secondary_axis_series: 'Agricultural Researchers (FTE) per 100 000 Agricultural Workers'
+          chart_title: 'Year Comparison (Kenya, 2015-2023)'
+      row:
+        type: fields
+      access:
+        type: perm
+        options:
+          perm: 'access content'
+      cache:
+        type: tag
+        options: {  }
+      relationships: {  }
+      arguments: {  }
+      header: {  }
+      footer: {  }
+      empty: {  }
+    cache_metadata:
+      max-age: -1
+      contexts:
+        - 'languages:language_interface'
+        - url
+        - url.query_args
+        - user.permissions
+      tags: {  }
+  block_growth:
+    id: block_growth
+    display_title: 'Chart: Annual Growth Rate'
+    display_plugin: block
+    position: 4
+    display_options:
+      defaults:
+        fields: false
+        sorts: false
+        filters: false
+        pager: false
+        style: false
+        row: false
+      display_description: 'ASTI/FAOSTAT - Annual Growth Rate chart (Kenya, 2015-2023)'
+      display_extenders: {  }
+      block_description: 'dotStat Suite ASTI/FAOSTAT - Annual Growth Rate chart'
+      block_category: Tapipedia
+      fields:
+        time_period:
+          id: time_period
+          table: dotstatsuite_asti_api_views_indicator
+          field: time_period
+          relationship: none
+          group_type: group
+          plugin_id: numeric
+          label: Year
+        indicator_label:
+          id: indicator_label
+          table: dotstatsuite_asti_api_views_indicator
+          field: indicator_label
+          relationship: none
+          group_type: group
+          plugin_id: standard
+          label: 'Indicator name'
+        obs_value:
+          id: obs_value
+          table: dotstatsuite_asti_api_views_indicator
+          field: obs_value
+          relationship: none
+          group_type: group
+          plugin_id: numeric
+          label: Value
+      sorts:
+        time_period:
+          id: time_period
+          table: dotstatsuite_asti_api_views_indicator
+          field: time_period
+          relationship: none
+          group_type: group
+          plugin_id: standard
+          order: ASC
+      filters:
+        ref_area:
+          id: ref_area
+          table: dotstatsuite_asti_api_views_indicator
+          field: ref_area
+          relationship: none
+          group_type: group
+          plugin_id: string
+          operator: '='
+          value: KEN
+          group: 1
+          exposed: false
+          expose: { operator_id: '', label: '', identifier: '', required: false, remember: false, multiple: false }
+          is_grouped: false
+        indicator:
+          id: indicator
+          table: dotstatsuite_asti_api_views_indicator
+          field: indicator
+          relationship: none
+          group_type: group
+          plugin_id: string
+          operator: '='
+          value: RESEARCHERS_FTE_GROWTH_PCT
+          group: 1
+          exposed: false
+          expose: { operator_id: '', label: '', identifier: '', required: false, remember: false, multiple: false }
+          is_grouped: false
+        time_period:
+          id: time_period
+          table: dotstatsuite_asti_api_views_indicator
+          field: time_period
+          relationship: none
+          group_type: group
+          plugin_id: numeric
+          operator: '>='
+          value: { min: '', max: '', value: '2015' }
+          group: 1
+          exposed: false
+          expose: { operator_id: '', label: '', identifier: '', required: false, remember: false, multiple: false }
+          is_grouped: false
+      pager:
+        type: none
+        options:
+          offset: 0
+          items_per_page: 0
+      style:
+        type: dotstatsuite_chartjs
+        options:
+          chart_type: line
+          label_field: time_period
+          series_field: indicator_label
+          value_field: obs_value
+          secondary_axis_series: ''
+          chart_title: 'Annual Growth Rate (Kenya)'
+      row:
+        type: fields
+      access:
+        type: perm
+        options:
+          perm: 'access content'
+      cache:
+        type: tag
+        options: {  }
+      relationships: {  }
+      arguments: {  }
+      header: {  }
+      footer: {  }
+      empty: {  }
+    cache_metadata:
+      max-age: -1
+      contexts:
+        - 'languages:language_interface'
+        - url
+        - url.query_args
+        - user.permissions
+      tags: {  }
+  block_expenditure:
+    id: block_expenditure
+    display_title: 'Chart: Total Expenditure Trend'
+    display_plugin: block
+    position: 5
+    display_options:
+      defaults:
+        fields: false
+        sorts: false
+        filters: false
+        pager: false
+        style: false
+        row: false
+      display_description: 'ASTI/FAOSTAT - Total Expenditure Trend chart (Kenya, 2015-2023)'
+      display_extenders: {  }
+      block_description: 'dotStat Suite ASTI/FAOSTAT - Total Expenditure Trend chart'
+      block_category: Tapipedia
+      fields:
+        time_period:
+          id: time_period
+          table: dotstatsuite_asti_api_views_indicator
+          field: time_period
+          relationship: none
+          group_type: group
+          plugin_id: numeric
+          label: Year
+        indicator_label:
+          id: indicator_label
+          table: dotstatsuite_asti_api_views_indicator
+          field: indicator_label
+          relationship: none
+          group_type: group
+          plugin_id: standard
+          label: 'Indicator name'
+        obs_value:
+          id: obs_value
+          table: dotstatsuite_asti_api_views_indicator
+          field: obs_value
+          relationship: none
+          group_type: group
+          plugin_id: numeric
+          label: Value
+      sorts:
+        time_period:
+          id: time_period
+          table: dotstatsuite_asti_api_views_indicator
+          field: time_period
+          relationship: none
+          group_type: group
+          plugin_id: standard
+          order: ASC
+      filters:
+        ref_area:
+          id: ref_area
+          table: dotstatsuite_asti_api_views_indicator
+          field: ref_area
+          relationship: none
+          group_type: group
+          plugin_id: string
+          operator: '='
+          value: KEN
+          group: 1
+          exposed: false
+          expose: { operator_id: '', label: '', identifier: '', required: false, remember: false, multiple: false }
+          is_grouped: false
+        indicator:
+          id: indicator
+          table: dotstatsuite_asti_api_views_indicator
+          field: indicator
+          relationship: none
+          group_type: group
+          plugin_id: string
+          operator: '='
+          value: EXPENDITURE_TOTAL
+          group: 1
+          exposed: false
+          expose: { operator_id: '', label: '', identifier: '', required: false, remember: false, multiple: false }
+          is_grouped: false
+        time_period:
+          id: time_period
+          table: dotstatsuite_asti_api_views_indicator
+          field: time_period
+          relationship: none
+          group_type: group
+          plugin_id: numeric
+          operator: '>='
+          value: { min: '', max: '', value: '2015' }
+          group: 1
+          exposed: false
+          expose: { operator_id: '', label: '', identifier: '', required: false, remember: false, multiple: false }
+          is_grouped: false
+      pager:
+        type: none
+        options:
+          offset: 0
+          items_per_page: 0
+      style:
+        type: dotstatsuite_chartjs
+        options:
+          chart_type: bar
+          label_field: time_period
+          series_field: indicator_label
+          value_field: obs_value
+          secondary_axis_series: ''
+          chart_title: 'Total Expenditure Trend (Kenya)'
+      row:
+        type: fields
+      access:
+        type: perm
+        options:
+          perm: 'access content'
+      cache:
+        type: tag
+        options: {  }
+      relationships: {  }
+      arguments: {  }
+      header: {  }
+      footer: {  }
+      empty: {  }
+    cache_metadata:
+      max-age: -1
+      contexts:
+        - 'languages:language_interface'
+        - url
+        - url.query_args
+        - user.permissions
+      tags: {  }

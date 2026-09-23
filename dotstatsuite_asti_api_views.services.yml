@@ -1,0 +1,7 @@
+services:
+  logger.channel.dotstatsuite_asti_api_views:
+    parent: logger.channel_base
+    arguments: ['dotstatsuite_asti_api_views']
+  dotstatsuite_asti_api_views.importer:
+    class: Drupal\dotstatsuite_asti_api_views\SdmxIndicatorImporter
+    arguments: ['@http_client', '@database', '@logger.channel.dotstatsuite_asti_api_views']

@@ -1,0 +1,8 @@
+/* Canvas needs an explicit-height parent since maintainAspectRatio is
+   false in views-chartjs.js (fills the block region it's placed in
+   instead of an arbitrary aspect ratio). */
+.views-chartjs-wrapper {
+  position: relative;
+  height: 280px;
+  margin-bottom: 1rem;
+}
